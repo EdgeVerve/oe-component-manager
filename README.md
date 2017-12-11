@@ -13,4 +13,4 @@ OE Component Manager, is a plugin for OE Studio which provide end users a web in
 * add oe-component-manager to the application's [designer config](http://evgit/oecloud.io/oe-studio#configuration-for-designer-in-oe-cloud).
 * bower install `oe-component-manager`
 
-> Learn more about OE Component Manager [here]().
+> Learn more about OE Component Manager [here](http://evgit/oecloud.io/oe-component-manager/blob/master/docs/oe-component-manager.md).
