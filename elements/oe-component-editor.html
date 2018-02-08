@@ -363,7 +363,7 @@
             attached: function () {
                 this.set('panelSelected', 0);
                 var list = [];
-                Object.keys(OEUtils.TypeMappings).forEach(function (k) {
+                OEUtils.TypeMappings && Object.keys(OEUtils.TypeMappings).forEach(function (k) {
                     var v = OEUtils.TypeMappings[k];
                     if (list.indexOf(v.uiType) === -1) {
                         list.push(v.uiType)
@@ -477,7 +477,7 @@
                     return JSON.stringify(prop.applied) === "true";
                 });
 
-                /* 
+                /*
                     Commenting out fields array trimming logic
                     var diffIndex = 0;
                     for (var i = includedFields.length - 1; i > 0; i--) {
@@ -544,7 +544,7 @@
                     var additionalProps = [];
                     if (componentField) {
                         componentField = JSON.parse(JSON.stringify(componentField));
-                        Object.keys(componentField).forEach(function (k) {
+                        componentField && Object.keys(componentField).forEach(function (k) {
                             var v = componentField[k];
                             if (boolKeys.indexOf(k) !== -1) {
                                 fmeta[k] = {
@@ -641,7 +641,7 @@
                 this.fieldMeta._props.forEach(function (p) {
                     payloadFmeta[p.key] = p.value
                 });
-                Object.keys(payloadFmeta).forEach(function (k) {
+                payloadFmeta && Object.keys(payloadFmeta).forEach(function (k) {
                     if (payloadFmeta[k] === undefined) {
                         delete payloadFmeta[k]
                     }
