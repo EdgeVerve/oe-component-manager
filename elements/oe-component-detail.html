@@ -227,10 +227,19 @@
                     var temp = elem.querySelector('template');
                     custom.appendChild(temp);
                     //MetaPolymer Action
-                    this.set('templateContainers', [].map.call(temp.content.querySelectorAll('[id]'),
+                    var templateContainers = [].map.call(temp.content.querySelectorAll('[id]'),
                         function (d) {
                             return d.getAttribute('id')
-                        }));
+                    });
+
+                    if(this.metaData.container && Array.isArray(this.metaData.container.steps)){
+                        this.metaData.container.steps.forEach(function(step){
+                            step.id && templateContainers.push(step.id);
+                        });
+                    }
+
+                    this.set('templateContainers', templateContainers);
+
                     if (OEUtils.Metamorph) {
                         OEUtils.Metamorph(temp, this.metaData, {});
                     }
