@@ -1,7 +1,10 @@
-<!--
-  ©2016-2017 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),
-  Bangalore, India. All Rights Reserved.
--->
+<!-- ©2017-2018 EdgeVerve Systems Limited (a fully owned Infosys subsidiary), Bangalore, India. All Rights Reserved.
+The EdgeVerve proprietary software program ("Program"), is protected by copyrights laws, international treaties and other pending or existing intellectual property rights in India, the United States and other countries.
+The Program may contain/reference third party or open source components, the rights to which continue to
+remain with the applicable third party licensors or the open source community as the case may be and nothing
+here transfers the rights to the third party and open source components, except as expressly permitted.
+Any unauthorized reproduction, storage, transmission in any form or by any means (including without limitation to electronic, mechanical, printing, photocopying, recording or  otherwise), or any distribution of this Program,or any portion of it, may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law. -->
+
 
 <dom-module id="oe-component-editor">
     <template>
@@ -368,7 +371,7 @@
             attached: function () {
                 this.set('panelSelected', 0);
                 var list = [];
-                Object.keys(OEUtils.TypeMappings).forEach(function (k) {
+                OEUtils.TypeMappings && Object.keys(OEUtils.TypeMappings).forEach(function (k) {
                     var v = OEUtils.TypeMappings[k];
                     if (list.indexOf(v.uiType) === -1) {
                         list.push(v.uiType)
@@ -482,7 +485,7 @@
                     return JSON.stringify(prop.applied) === "true";
                 });
 
-                /* 
+                /*
                     Commenting out fields array trimming logic
                     var diffIndex = 0;
                     for (var i = includedFields.length - 1; i > 0; i--) {
@@ -549,7 +552,7 @@
                     var additionalProps = [];
                     if (componentField) {
                         componentField = JSON.parse(JSON.stringify(componentField));
-                        Object.keys(componentField).forEach(function (k) {
+                        componentField && Object.keys(componentField).forEach(function (k) {
                             var v = componentField[k];
                             if (boolKeys.indexOf(k) !== -1) {
                                 fmeta[k] = {
@@ -646,7 +649,7 @@
                 this.fieldMeta._props.forEach(function (p) {
                     payloadFmeta[p.key] = p.value
                 });
-                Object.keys(payloadFmeta).forEach(function (k) {
+                payloadFmeta && Object.keys(payloadFmeta).forEach(function (k) {
                     if (payloadFmeta[k] === undefined) {
                         delete payloadFmeta[k]
                     }

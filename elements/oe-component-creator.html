@@ -215,7 +215,7 @@
         /* .template-has-model paper-radio-button[type="component"]{
             display: none;
         } */
-        
+
         .template-no-model paper-radio-button[type="form"]{
             display: none;
         }
@@ -227,13 +227,13 @@
                     <div class="step-1 step">
                         <div class="step-title">Name the page and configure</div>
                         <div class="step-content">
-                            <oe-input label="Page Name" value="{{uiComponent.name}}" field-id="name" required 
+                            <oe-input label="Page Name" value="{{uiComponent.name}}" field-id="name" required
                             pattern="^([a-zA-Z0-9]+)((-[a-zA-Z0-9]+)+)$" id="componentName"></oe-input>
-                            <oe-async-validator fields='["name"]' model={{uiComponent}} 
-                            requesturl='[[_validateUrl(uiComponent.name)]]' 
+                            <oe-async-validator fields='["name"]' model={{uiComponent}}
+                            requesturl='[[_validateUrl(uiComponent.name)]]'
                             ensure="absent" error="component name already in use"></oe-async-validator>
-                            <oe-combo id="modelName" show-refresh value="{{uiComponent.modelName}}" 
-                            label="Search Models" displayproperty="name" valueproperty="name" 
+                            <oe-combo id="modelName" show-refresh value="{{uiComponent.modelName}}"
+                            label="Search Models" displayproperty="name" valueproperty="name"
                             listurl="[[_getRestApiUrl('/ModelDefinitions?filter[fields][name]=true')]]" on-pt-item-confirmed="_getModelData" on-blur="_getModelData"></oe-combo>
                             <div hidden$="[[!isModelObtained]]">
                                 <div class="more-props">
@@ -380,14 +380,14 @@
                     self.set('isModelObtained', false);
                     self.set('modelMeta.modelProperties', []);
                 }
-                
+
             },
             generateFieldsArr: function (resp) {
                 // var fields = [];
                 var properties = [];
                 var meta = {}
                 var modelData = resp[this.uiComponent.modelName];
-                Object.keys(modelData.properties).forEach(function (prop) {
+                modelData.properties && Object.keys(modelData.properties).forEach(function (prop) {
                     var modelprop = {
                         name: prop,
                         'config': modelData.properties[prop],

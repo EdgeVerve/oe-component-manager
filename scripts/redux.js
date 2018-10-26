@@ -784,7 +784,7 @@
         }
 
         function assertReducerSanity(reducers) {
-          Object.keys(reducers).forEach(function (key) {
+          reducers && Object.keys(reducers).forEach(function (key) {
             var reducer = reducers[key];
             var initialState = reducer(undefined, {
               type: _createStore.ActionTypes.INIT
