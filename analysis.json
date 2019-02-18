@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0.0",
+  "elements": [
+    {
+      "description": "`oe-component-manager`\n A template element , used to create oe-ui Polymer 3 elements.\n By default includes `OECommonMixin` to support use of 'fire','async' and '_deepValue' functions.",
+      "summary": "",
+      "path": "oe-component-manager.js",
+      "properties": [],
+      "methods": [],
+      "staticMethods": [],
+      "demos": [
+        {
+          "url": "demo/index.html",
+          "description": ""
+        }
+      ],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 20,
+          "column": 0
+        },
+        "end": {
+          "line": 42,
+          "column": 1
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "name": "OEComponentManager",
+      "attributes": [],
+      "events": [],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "oe-component-manager",
+      "mixins": [
+        "OECommonMixin"
+      ]
+    }
+  ]
+}

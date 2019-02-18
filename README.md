@@ -1,16 +1,25 @@
-# OE Component Manager
+# \<oe-component-manager\>
 
-## Introduction
+A template element , used to create oe-ui Polymer 3 elements
 
-OE Component Manager, is a plugin for OE Studio which provide end users a web interface using which they will be able to generate form components using minimalistic input.
+## Install the Polymer-CLI
 
-## Prerequisites
-* oe-cloud based [ui-app](https://github.com/EdgeVerve/oe-ui-app).
-* [oe-studio](http://evgit/oecloud.io/oe-studio)
+First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) and npm (packaged with [Node.js](https://nodejs.org)) installed. Run `npm install` to install your element's dependencies, then run `polymer serve` to serve your element locally.
 
-## Getting Started
+## Viewing Your Element
 
-* add oe-component-manager to the application's [designer config](http://evgit/oecloud.io/oe-studio#configuration-for-designer-in-oe-cloud).
-* bower install `oe-component-manager`
+The below command generates a JSON file that polymer reads to create documentation. This JSON is created based on the JSDoc comments present in the file provided.
 
-> Learn more about OE Component Manager [here](http://evgit/oecloud.io/oe-component-manager/blob/master/docs/oe-component-manager.md).
+```
+$polymer analyze oe-component-manager.js > analysis.json
+```
+
+Once analysis.json is created run the below command to serve the file. Optional parameter `--open` to launch browser.
+```
+$ polymer serve [--open]
+```
+
+## Running Tests
+Once the files are served using `polymer serve` navigating to `\test` runs the test files
+
+Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.

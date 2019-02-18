@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>oe-component-manager test</title>
+
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../node_modules/@polymer/test-fixture/test-fixture.js"></script>
+  <script src="../node_modules/chai/chai.js"></script>
+  <script src="../node_modules/mocha/mocha.js"></script>
+  <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
+
+
+  <script type="module" src="../src/oe-component-field-form.js"></script>
+</head>
+
+<body>
+  <test-fixture id="editor">
+    <template>
+      <oe-component-field-form></oe-component-field-form>
+    </template>
+  </test-fixture>
+
+  <script type="module">
+
+    window.OEUtils = window.OEUtils || {};
+    window.OEUtils._getRestApiUrl = function (path) {
+      var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
+      return restApiRoot + path;
+    };
+
+    function sq(node, query) {
+      return node.shadowRoot.querySelector(query);
+    }
+
+    function sqa(node, query) {
+      return node.shadowRoot.querySelectorAll(query);
+    }
+
+    suite('simple component', function () {
+      var el;
+      setup(function (done) {
+        el = fixture('editor');
+        var field = {
+          fieldId: "firstName"
+        };
+        flush(function () {
+          el.set('field', field);
+          done();
+        });
+      });
+
+      test('Intial load -> toggle view', function (done) {
+        flush(function () {
+          assert.equal(el.field.fieldId, "firstName");
+          assert.equal(el._selectedView, 0);
+          el._toggleView();
+          flush(function () {
+            assert.equal(el._selectedView, 1);
+            done();
+          });
+        });
+      });
+
+      test('Edit field and save : form view', function (done) {
+        flush(function () {
+          assert.equal(el.field.required, undefined);
+          var updateListener = function (event) {
+            el.removeEventListener('oe-action-update', updateListener);
+            assert.equal(event.detail.required, true);
+            done();
+          }
+          el.addEventListener('oe-action-update', updateListener);
+          el.set('field.required', true);
+          el.$.saveFieldBtn.click();
+        });
+      });
+
+      test('Edit field and save : JSON view', function (done) {
+        flush(function () {
+          assert.equal(el.field.required, undefined);
+          var updateListener = function (event) {
+            el.removeEventListener('oe-action-update', updateListener);
+            assert.equal(event.detail.required, true);
+            done();
+          }
+          el.addEventListener('oe-action-update', updateListener);
+          el.set('field', { "fieldId": "firstName", "required": true });
+          flush(function () {
+            el._toggleView();
+            el.$.saveFieldBtn.click();
+          });
+        });
+      });
+    });
+
+  </script>
+</body>
+
+</html>

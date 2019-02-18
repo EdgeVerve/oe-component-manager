@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>oe-component-manager test</title>
+
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../node_modules/@polymer/test-fixture/test-fixture.js"></script>
+  <script src="../node_modules/chai/chai.js"></script>
+  <script src="../node_modules/mocha/mocha.js"></script>
+  <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
+
+
+  <script type="module" src="../src/oe-component-container-editor.js"></script>
+</head>
+
+<body>
+  <test-fixture id="editor">
+    <template>
+      <oe-component-container-editor></oe-component-container-editor>
+    </template>
+  </test-fixture>
+
+  <script type="module">
+
+    window.OEUtils = window.OEUtils || {};
+    window.OEUtils._getRestApiUrl = function (path) {
+      var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
+      return restApiRoot + path;
+    };
+
+
+
+    function sq(node, query) {
+      return node.shadowRoot.querySelector(query);
+    }
+
+    function sqa(node, query) {
+      return node.shadowRoot.querySelectorAll(query);
+    }
+
+    suite('simple component', function () {
+      var el;
+      setup(function (done) {
+        el = fixture('editor');
+        var container = {
+          target:"#field",
+          nodeType:"div",
+          nodeAttributes:{
+            "class":"dynamic-container"
+          },
+          steps:[{
+            "id":"dynamic-1"
+          },{
+            "id":"dynamic-2"
+          },{
+            "id":"dynamic-3"
+          }]
+        };
+        flush(function () {
+          el.set('container',container);
+          done();
+        })
+      })
+
+      test('Intial load', function (done) {
+        flush(function () {
+          assert.equal(el._containerSteps.length, 3);
+          done();
+        });
+      });
+
+      test('add/remove new container', function (done) {
+        flush(function () {
+          assert.equal(el._containerSteps.length, 3);
+          var containerTable = sq(el,'oe-data-table');
+          var header = sq(containerTable,'oe-data-table-header');
+          var addIcon = sq(header,'.header-icon paper-icon-button');
+          addIcon.click();
+          flush(function(){
+            assert.equal(el._containerSteps.length, 4);
+            containerTable.fire('oe-data-table-row-action',{
+              rowIndex:2,
+              action:{
+                action:"delete-step"
+              }
+            });
+            flush(function(){
+              assert.equal(el._containerSteps.length, 3);
+              done();
+            });
+          });
+        });
+      });
+
+      test('Re order containers', function (done) {
+        flush(function () {
+          
+          var containerTable = sq(el,'oe-data-table');
+          assert.equal(el._containerSteps[0].id, "dynamic-1");
+          containerTable.fire('oe-data-table-row-action',{
+              rowIndex:0,
+              action:{
+                action:"move-down"
+              }
+          });
+          flush(function(){
+            assert.equal(el._containerSteps[0].id, "dynamic-2");
+            containerTable.fire('oe-data-table-row-action',{
+                rowIndex:1,
+                action:{
+                  action:"move-up"
+                }
+            });
+            flush(function(){
+              assert.equal(el._containerSteps[0].id, "dynamic-1");
+              var data = el._getContainer();
+              assert.equal(data.valid,true);
+              done();
+            });
+          });
+        });
+      });
+    });
+
+  </script>
+</body>
+
+</html>

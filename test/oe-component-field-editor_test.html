@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>oe-component-manager test</title>
+
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../node_modules/@polymer/test-fixture/test-fixture.js"></script>
+  <script src="../node_modules/chai/chai.js"></script>
+  <script src="../node_modules/mocha/mocha.js"></script>
+  <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
+
+
+  <script type="module" src="../src/oe-component-field-editor.js"></script>
+</head>
+
+<body>
+  <test-fixture id="editor">
+    <template>
+      <oe-component-field-editor></oe-component-field-editor>
+    </template>
+  </test-fixture>
+
+  <script type="module">
+
+    window.OEUtils = window.OEUtils || {};
+    window.OEUtils._getRestApiUrl = function (path) {
+      var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
+      return restApiRoot + path;
+    };
+
+
+
+    function sq(node, query) {
+      return node.shadowRoot.querySelector(query);
+    }
+
+    function sqa(node, query) {
+      return node.shadowRoot.querySelectorAll(query);
+    }
+
+    suite('simple component', function () {
+      var el;
+      setup(function (done) {
+        el = fixture('editor');
+        var component = {
+          "name": "contact-form",
+          "templateName": "default-form.js",
+          "modelName": "Contact",
+          "fields": [
+            "FirstName",
+            "LastName",
+            "Email",
+            "MobilePhone",
+            {
+              "fieldId": "LeadSource",
+              "label": "Lead Source",
+              "uitype": "oe-combo",
+              "listdata": [
+                "Web",
+                "Phone Inquiry",
+                "Partner Referral",
+                "Purchased List",
+                "Other"
+              ],
+              "container": "fields"
+            }
+          ],
+          "autoInjectFields": true,
+          "excludeFields": [
+            "CanTrigger"
+          ],
+          "id": "b912967e-547f-4da1-9eef-6db8fefe9c19",
+          "_type": "UIComponent",
+          "_createdBy": "system",
+          "_modifiedBy": "system",
+          "_createdOn": "2019-01-11T08:12:33.013Z",
+          "_modifiedOn": "2019-01-11T08:12:33.013Z",
+          "_isDeleted": false,
+          "_version": "d694c844-5504-4bf1-99b0-b745f12bea84",
+          "container": {}
+        }
+        var metaData = {
+          "componentName": "contact-form",
+          "elements": {},
+          "fields": [
+            "FirstName",
+            "LastName",
+            "Email",
+            "MobilePhone",
+            {
+              "fieldId": "LeadSource",
+              "label": "Lead Source",
+              "uitype": "oe-combo",
+              "listdata": [
+                "Web",
+                "Phone Inquiry",
+                "Partner Referral",
+                "Purchased List",
+                "Other"
+              ],
+              "container": "fields"
+            }
+          ],
+          "modelName": "Contact",
+          "modelAlias": "contact",
+          "container": {},
+          "metadata": {
+            "models": {
+              "Contact": {
+                "resturl": "/api/Contacts",
+                "properties": {
+                  "FirstName": {
+                    "type": "string"
+                  },
+                  "LastName": {
+                    "type": "string"
+                  },
+                  "Email": {
+                    "type": "string"
+                  },
+                  "MobilePhone": {
+                    "type": "string"
+                  },
+                  "LeadSource": {
+                    "type": "string"
+                  },
+                  "Description": {
+                    "type": "string"
+                  },
+                  "CanTrigger": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "resturl": "/api/Contacts",
+            "properties": {
+              "FirstName": {
+                "type": "string",
+                "label": "First Name",
+                "fieldId": "FirstName",
+                "uitype": "oe-input"
+              },
+              "LastName": {
+                "type": "string",
+                "label": "Last Name",
+                "fieldId": "LastName",
+                "uitype": "oe-input"
+              },
+              "Email": {
+                "type": "string",
+                "label": "Email",
+                "fieldId": "Email",
+                "uitype": "oe-input"
+              },
+              "MobilePhone": {
+                "type": "string",
+                "label": "Mobile Phone",
+                "fieldId": "MobilePhone",
+                "uitype": "oe-input"
+              },
+              "LeadSource": {
+                "type": "string",
+                "label": "Lead Source",
+                "fieldId": "LeadSource",
+                "uitype": "oe-combo",
+                "listdata": [
+                  "Web",
+                  "Phone Inquiry",
+                  "Partner Referral",
+                  "Purchased List",
+                  "Other"
+                ],
+                "container": "fields"
+              },
+              "Description": {
+                "type": "string",
+                "label": "Description",
+                "uitype": "oe-input"
+              },
+              "CanTrigger": {
+                "type": "boolean",
+                "label": "Can Trigger"
+              }
+            }
+          },
+          "autoInjectFields": true,
+          "excludeFields": [
+            "CanTrigger"
+          ],
+          "dynamicDefaults": [],
+          "defaultVM": {
+            "CanTrigger": false
+          }
+        };
+        var containers = [
+          "fields",
+          "grids"
+        ];
+        flush(function () {
+          el.set('containers',containers);
+          el.set('component',component);
+          el.set('metaData',metaData);
+          done();
+        })
+      })
+
+      test('Intial load', function (done) {
+        flush(function () {
+          assert.equal(el._fields.length, 5);
+          assert.equal(el._modelFields.length, 1);
+          assert.equal(el._excludedFields.length, 1);
+          done();
+        });
+      });
+
+      test('add/remove new field', function (done) {
+        flush(function () {
+          assert.equal(el._fields.length, 5);
+          var fieldTable = el.$.fieldTable;
+          var header = sq(fieldTable,'oe-data-table-header');
+          var addIcon = sq(header,'.header-icon paper-icon-button');
+          addIcon.click();
+          flush(function(){
+            assert.equal(el._fields.length, 6);
+            fieldTable.fire('oe-data-table-row-action',{
+              rowIndex:5,
+              action:{
+                action:"delete-field"
+              }
+            });
+            flush(function(){
+              assert.equal(el._fields.length, 5);
+              done();
+            });
+          });
+        });
+      });
+
+      test('Re order fields', function (done) {
+        flush(function () {
+          
+          var fieldTable = el.$.fieldTable;
+          assert.equal(el._fields[0].fieldId, "FirstName");
+          fieldTable.fire('oe-data-table-row-action',{
+              rowIndex:0,
+              action:{
+                action:"move-down"
+              }
+          });
+          flush(function(){
+            assert.equal(el._fields[0].fieldId, "LastName");
+            fieldTable.fire('oe-data-table-row-action',{
+                rowIndex:1,
+                action:{
+                  action:"move-up"
+                }
+            });
+            flush(function(){
+              assert.equal(el._fields[0].fieldId, "FirstName");
+              done();
+            });
+          });
+        });
+      });
+
+      test('Move fields between excluded-list/model-fields/fields', function (done) {
+        flush(function () {
+          assert.equal(el._modelFields[0], "Description");
+          assert.equal(el._excludedFields[0], "CanTrigger");
+          var sendToExclude = sq(el,'.model-fields-list [icon="delete"]');
+          sendToExclude.click();
+          flush(function(){
+            var removeFromExclude = sq(el,'.excluded-field-list [icon="clear"]');
+            assert.equal(el._modelFields.length, 0);
+            assert.equal(el._excludedFields.length, 2);
+            removeFromExclude.click();
+            flush(function(){
+              var sendToFields = sq(el,'.model-fields-list [icon="add"]');
+              assert.equal(el._modelFields.length, 1);
+              assert.equal(el._excludedFields.length, 1);
+              assert.equal(el._fields.length, 5);
+              sendToFields.click();
+              flush(function(){
+                assert.equal(el._modelFields.length, 0);
+                assert.equal(el._fields.length, 6);
+                var result = el._getField();
+                assert.equal(result.valid, true);
+                assert.equal(result.result.fields.length, 6);
+                done();
+              });
+            });
+          });
+        });
+      });
+
+    });
+
+  </script>
+</body>
+
+</html>
