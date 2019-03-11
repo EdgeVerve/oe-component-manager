@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>oe-component-manager test</title>
+
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../node_modules/@polymer/test-fixture/test-fixture.js"></script>
+  <script src="../node_modules/chai/chai.js"></script>
+  <script src="../node_modules/mocha/mocha.js"></script>
+  <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
+
+  <script src="../node_modules/fakerest/dist/FakeRest.min.js"></script>
+  <script src="../node_modules/sinon/pkg/sinon.js"></script>
+
+  
+  <script type="module" src="../oe-component-manager.js"></script>
+</head>
+
+<body>
+  <test-fixture id="simple">
+    <template>
+      <oe-component-manager></oe-component-manager>
+    </template>
+  </test-fixture>
+
+  <script type="module">
+
+    import { html, PolymerElement } from "@polymer/polymer/polymer-element.js";
+    window.PolymerElement = PolymerElement;
+    window.html = html;
+    window.OEUtils = window.OEUtils || {};
+    window.OEUtils._getRestApiUrl = function (path) {
+      var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
+      return restApiRoot + path;
+    };
+
+    var serverData = {
+      UIComponent: [{ "name": "contact-form", "templateName": "default-form.js", "modelName": "Contact", "fields": ["FirstName", "LastName", "Email", "MobilePhone", { "fieldId": "LeadSource", "label": "Lead Source", "uitype": "oe-combo", "listdata": ["Web", "Phone Inquiry", "Partner Referral", "Purchased List", "Other"], "container": "fields" }, "LeadSource"], "polymerConfig": { "listeners": { "oe-route-change": "_routeChanged" }, "functions": { "attached": "function() {this.set('contact.CanTrigger', true); }", "_routeChanged": "function(event) { this.set('contact.CanTrigger', true); }" } }, "autoInjectFields": true, "excludeFields": ["CanTrigger"], "id": "b912967e-547f-4da1-9eef-6db8fefe9c19", "_type": "UIComponent", "_createdBy": "system", "_modifiedBy": "system", "_createdOn": "2019-01-11T08:12:33.013Z", "_modifiedOn": "2019-01-11T08:12:33.013Z", "_isDeleted": false, "_version": "d694c844-5504-4bf1-99b0-b745f12bea84" }, { "name": "vehicle-form", "templateName": "default-form.js", "modelName": "Vehicle", "fields": ["name", { "fieldId": "region", "uitype": "ev-combo", "listdata": ["north", "south", "east", "west"] }, "description"], "autoInjectFields": true, "excludeFields": ["systemOnly"], "id": "5895c81c9107c1ed084c46a0", "_type": "UIComponent", "_createdBy": "system", "_modifiedBy": "system", "_createdOn": "2019-01-11T08:12:33.034Z", "_modifiedOn": "2019-01-11T08:12:33.034Z", "_isDeleted": false, "_version": "98d1a1d2-e9d2-4a77-acca-097ae023de6e" }, { "name": "test-element", "templateName": "blank-template.js", "fields": [], "autoInjectFields": false, "excludeFields": [], "id": "5c45b767eb0c2d4352784917", "_type": "UIComponent", "_createdBy": "judith", "_modifiedBy": "judith", "_createdOn": "2019-01-21T12:13:27.072Z", "_modifiedOn": "2019-01-21T12:13:27.072Z", "_isDeleted": false, "_version": "7632f19a-0987-4266-bcb2-9074fb368c88" }],
+      template: [{ "file": "blank-template.js", "path": "client/templates", "content": "import {html,PolymerElement} from '/node_modules/@polymer/polymer/polymer-element.js';\r\nimport { OECommonMixin } from \"/node_modules/oe-mixins/oe-common-mixin.js\";\r\nimport \"/node_modules/oe-ui-forms/meta-polymer.js\";\r\n\r\nclass blankTemplate extends OECommonMixin(PolymerElement) {\r\n  static get template() {\r\n    return html `\r\n    <style>\r\n      :host {\r\n        display: block;\r\n        padding: 8px;\r\n      }\r\n      #content {\r\n        background: #fff;\r\n      }\r\n    </style>\r\n\t\t<div class=\"content\" id=\"content\"></div>`;\r\n  }\r\n\r\n  static get is() {\r\n    return \":componentName\";\r\n  }\r\n}\r\n\r\nwindow.customElements.metadefine(blankTemplate.is,blankTemplate);", "type": "component" }, { "file": "blank-element.js", "path": "client/node_modules/oe-ui-forms/templates", "content": "/**\r\n * @license\r\n * ©2018-2019 EdgeVerve Systems Limited (a fully owned Infosys subsidiary),\r\n * Bangalore, India. All Rights Reserved.\r\n */\r\nimport { html, PolymerElement } from '/node_modules/@polymer/polymer/polymer-element.js';\r\nimport { OECommonMixin } from \"/node_modules/oe-mixins/oe-common-mixin.js\";\r\nimport \"/node_modules/oe-ui-forms/meta-polymer.js\";\r\n\r\n/**\r\n * @templateInformation\r\n *    @className blankElement\r\n *    @description Empty template with single container\r\n *    @modelRequired true \r\n * \r\n */\r\n\r\n/**\r\n * @customElement\r\n * @polymer\r\n */\r\nclass blankElement extends OECommonMixin(PolymerElement) {\r\n  static get template() {\r\n    return html`\r\n    <style>\r\n      :host {\r\n        display: block;\r\n        padding: 8px;\r\n      }\r\n      #content {\r\n        background: #fff;\r\n      }\r\n    </style>\r\n\t\t<div class=\"content\" id=\"content\"></div>`;\r\n  }\r\n\r\n  static get is() {\r\n    return \":componentName\";\r\n  }\r\n}\r\n\r\nwindow.customElements.metadefine(blankElement.is, blankElement);\r\n\r\nexport const blankElementClass = blankElement;", "type": "component" }]
+    }
+
+
+    var fakeAjax = [
+      {
+        "method": "GET",
+        "url": /api\/UIComponents/,
+        "response": serverData.UIComponent
+      },
+      {
+        "method": "GET",
+        "url": /designer\/templates/,
+        "response": serverData.template
+      },
+      {
+        "method": "POST",
+        "url": /api\/UIComponents/,
+        "response": { "name": "test-element1", "templateName": "blank-template.js", "fields": [], "autoInjectFields": false, "excludeFields": [], "id": "5c45b767eb0c2d4352784917", "_type": "UIComponent", "_createdBy": "judith", "_modifiedBy": "judith", "_createdOn": "2019-01-21T12:13:27.072Z", "_modifiedOn": "2019-01-21T12:13:27.072Z", "_isDeleted": false, "_version": "7632f19a-0987-4266-bcb2-9074fb368c88" }
+      },
+      {
+        "method": "GET",
+        "url": /api\/UIRoutes/,
+        "response": []
+      },
+      {
+        "method": "POST",
+        "url": /api\/UIComponents\/simulate/,
+        "type": "application/javascript",
+        "response": "var OEUtils = window.OEUtils || {};\nOEUtils.metadataCache = OEUtils.metadataCache || {};\nOEUtils.metadataCache[\"test-element\"] = {\"componentName\":\"test-element\",\"elements\":{},\"fields\":[],\"modelName\":\"\",\"modelAlias\":\"vm\",\"container\":{},\"metadata\":{},\"autoInjectFields\":false,\"excludeFields\":[]};\nclass blankTemplate extends PolymerElement \n{  static get template() {    return html`    <style>      :host {        display: block;        padding: 8px;      }      #content {        background: #fff;      }    </style>		<div class=\"content\" id=\"content\"></div>`;  }  static get is() {    return \"test-element\";  }}window.customElements.metadefine(blankTemplate.is, blankTemplate);"
+      }
+    ];
+
+    function sq(node, query) {
+      return node.shadowRoot.querySelector(query);
+    }
+
+    function sqa(node, query) {
+      return node.shadowRoot.querySelectorAll(query);
+    }
+
+    suite('simple component', function () {
+      var el, server;
+      var footerEl, componentListEl, componentCreatorEl, componentEditorEl, componentPreviewEl;
+      setup(function (done) {
+        server = sinon.fakeServer.create();
+        server.autoRespond = true;
+        server.respondImmediately = true;
+        server.async = true;
+
+        fakeAjax.forEach(function (conf) {
+          (function (fake) {
+            server.respondWith(fake.method, fake.url, function (req) {
+              if (fake.type) {
+                req.respond(200, { "content-type": fake.type }, fake.response);
+              } else {
+                req.respond(200, { "content-type": 'application/json' }, JSON.stringify(fake.response));
+              }
+              return true;
+            });
+            console.log("Added fake server for : ", fake.method + " on " + fake.url);
+          })(conf);
+        });
+
+        //oe-component-manager
+        el = fixture('simple');
+        flush(function () {
+          //oe-component-footer
+         
+          footerEl = el.$.footerEle;
+          //oe-component-list
+         
+          componentListEl = footerEl.$.componentList;
+          //oe-component-creator
+          componentCreatorEl = componentListEl.$.creator;
+          //oe-component-editor
+          componentEditorEl = el.$.editor;
+          //oe-component-preview
+          componentPreviewEl = el.$.preview;
+          done();
+        })
+      })
+
+      test('Intial load', function (done) {
+        flush(function () {
+          assert.equal(el.templateList.length, serverData.template.length);
+          assert.equal(componentListEl.componentList.length, serverData.UIComponent.length);
+          assert.equal(el.workingComponent, null);
+          assert.equal(el.stackIndex, -1);
+          assert.equal(el._previewClass, "full-view");
+          done();
+        });
+      });
+
+      test('Create and load element', function (done) {
+        flush(function () {
+          footerEl.$.pageSelectMenu.click();
+          flush(function () {
+            assert.equal(componentListEl._selectedView, "list-mode");
+            var addIcon = sq(componentListEl, '.list-detail iron-icon[icon="add"]');
+            addIcon.click();
+            flush(function () {
+              assert.equal(componentListEl._selectedView, "create-mode");
+              componentCreatorEl.set('uiComponent.name', 'test-element1');
+              componentCreatorEl.selectedStep = 1;
+              flush(function () {
+                var primaryBtn = sq(componentCreatorEl, '.navigation-section paper-button.primary-btn');
+                primaryBtn.click();
+                flush(function () {
+                  assert.equal(componentEditorEl.component.name, "test-element1");
+                  assert.equal(componentPreviewEl.component.name, "test-element1");
+                  done();
+                })
+              });
+            });
+          });
+        });
+      });
+
+      test('Load component -> edit -> Undo/Redo', function (done) {
+        server.restore();
+        flush(function () {
+          footerEl.$.pageSelectMenu.click();
+          flush(function () {
+            var compItems = sqa(componentListEl, '.components-list .list-item');
+            var testComp = compItems[compItems.length - 1];
+            testComp.click();
+            flush(function () {
+              assert.equal(el.componentStack.length, 1);
+              assert.equal(el.workingComponent.autoInjectFields, false);
+              assert.equal(componentEditorEl.component.name, "test-element");
+              assert.equal(componentPreviewEl.component.name, "test-element");
+              var autoInjectFlag = sq(componentEditorEl, 'oe-checkbox[label="Auto Inject fields"]');
+              autoInjectFlag.set('value', true);
+              flush(function () {
+                assert.equal(el.componentStack.length, 2);
+                assert.equal(el.workingComponent.autoInjectFields, true);
+                var undoBtn = sq(footerEl, '[icon="undo"]');
+                var redoBtn = sq(footerEl, '[icon="redo"]');
+                undoBtn.click();
+                flush(function () {
+                  assert.equal(el.workingComponent.autoInjectFields, false);
+                  redoBtn.click();
+                  flush(function () {
+                    assert.equal(el.workingComponent.autoInjectFields, true);
+                    done();
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+
+      test('Load component -> switch edit views',function(done){
+        server.restore();
+        flush(function () {
+          footerEl.$.pageSelectMenu.click();
+          flush(function () {
+            var compItems = sqa(componentListEl, '.components-list .list-item');
+            var testComp = compItems[compItems.length - 1];
+            testComp.click();
+            flush(function(){
+              assert.equal(componentEditorEl._selectedView,"component");
+              var gotoFieldIcon = sq(componentEditorEl,'.component-section.field-panel [icon="settings"]');
+              var gotoContainerIcon = sq(componentEditorEl,'.component-section.container-panel [icon="settings"]');
+              gotoFieldIcon.click();
+              flush(function(){
+                assert.equal(componentEditorEl._selectedView,"field");
+                componentEditorEl._saveFieldsArray();
+                flush(function(){
+                  assert.equal(componentEditorEl._selectedView,"component");
+                  gotoContainerIcon.click();
+                  flush(function(){
+                    assert.equal(componentEditorEl._selectedView,"container");
+                    componentEditorEl._saveContainerArray();
+                    flush(function(){
+                      assert.equal(componentEditorEl._selectedView,"component");
+                      done();
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+
+      test('Preview Element Class creation',function(done){
+        var testElement = class extends PolymerElement{
+          static get template(){
+            return html`
+              <h2> Form </h2>
+              <div id="cont-1">
+                  <div id="cont-1-1"></div>
+                  <div id="cont-1-2"></div>
+              </div>`;
+          }
+        }
+        componentPreviewEl.previewEleName = "test-element-123";
+        componentPreviewEl.metaData = {"componentName":"test-element-123","elements":{},"fields":[],"modelName":"","modelAlias":"vm","container":{},"metadata":{},"autoInjectFields":false,"excludeFields":[]};
+        flush(function(){
+          componentPreviewEl._previewPolymerClass(testElement);
+          flush(function(){
+            var createdComp = window.customElements.get('test-element-123');
+            assert.equal(componentPreviewEl.templateContainers.length,3);
+            assert.equal(createdComp.is,'test-element-123');
+            done();
+          });
+        });
+      });
+    });
+
+  </script>
+</body>
+
+</html>

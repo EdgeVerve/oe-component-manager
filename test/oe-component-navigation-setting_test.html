@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>oe-component-manager test</title>
+
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../node_modules/@polymer/test-fixture/test-fixture.js"></script>
+  <script src="../node_modules/chai/chai.js"></script>
+  <script src="../node_modules/mocha/mocha.js"></script>
+  <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
+
+  <script src="../node_modules/fakerest/dist/FakeRest.min.js"></script>
+  <script src="../node_modules/sinon/pkg/sinon.js"></script>
+
+  <script type="module" src="../src/oe-component-navigation-setting.js"></script>
+</head>
+
+<body>
+  <test-fixture id="navigation">
+    <template>
+      <oe-component-navigation-setting></oe-component-navigation-setting>
+    </template>
+  </test-fixture>
+
+  <script type="module">
+
+    window.OEUtils = window.OEUtils || {};
+    window.OEUtils._getRestApiUrl = function (path) {
+      var restApiRoot = (window.OEUtils && window.OEUtils.restApiRoot) ? window.OEUtils.restApiRoot : '/api';
+      return restApiRoot + path;
+    };
+
+    function sq(node, query) {
+      return node.shadowRoot.querySelector(query);
+    }
+
+    function sqa(node, query) {
+      return node.shadowRoot.querySelectorAll(query);
+    }
+
+
+
+    suite('simple component', function () {
+      var server = sinon.fakeServer.create();
+      
+      var el;
+      var selectedComponent = {
+        "name": "contact-form",
+        "templateName": "default-form.js",
+        "modelName": "Contact",
+        "fields": [
+          "FirstName",
+          "LastName",
+          "Email",
+          "MobilePhone",
+          {
+            "fieldId": "LeadSource",
+            "label": "Lead Source",
+            "uitype": "oe-combo",
+            "listdata": [
+              "Web",
+              "Phone Inquiry",
+              "Partner Referral",
+              "Purchased List",
+              "Other"
+            ],
+            "container": "fields"
+          }
+        ],
+        "autoInjectFields": true,
+        "excludeFields": [
+          "CanTrigger"
+        ],
+        "id": "b912967e-547f-4da1-9eef-6db8fefe9c19",
+        "_type": "UIComponent",
+        "_createdBy": "system",
+        "_modifiedBy": "system",
+        "_createdOn": "2019-01-11T08:12:33.013Z",
+        "_modifiedOn": "2019-01-11T08:12:33.013Z",
+        "_isDeleted": false,
+        "_version": "d694c844-5504-4bf1-99b0-b745f12bea84",
+        "container": {}
+      }
+      
+      var serverData = {
+        UIRoute:{
+          type:"elem",
+          name:"contact-form",
+          path:"/contact-form",
+          id:"asdasd"
+        },
+        PUTUIRoute:{
+          type:"elem",
+          name:"contact-form",
+          path:"/test-contact-form",
+          id:"asdasd"
+        },
+        NavigationLink:{
+          label:"Contact Form",
+          parent:"",
+          group:"root",
+          url:"/contact-form",
+          id:"asdasd"
+        }
+      }
+      
+      var fakeAjax = [{
+        "method": "GET",
+        "url": /api\/UIRoutes/,
+        "response": [serverData.UIRoute]
+      },
+      {
+        "method": "POST",
+        "url": /api\/UIRoutes/,
+        "response": serverData.UIRoute
+      },{
+        "method": "PUT",
+        "url": /api\/UIRoutes/,
+        "response": serverData.PUTUIRoute
+      },{
+        "method":"DELETE",
+        "url": /api\/UIRoutes/,
+        "response":{count:1}
+      },{
+        "method": "GET",
+        "url": /api\/NavigationLinks/,
+        "response": [serverData.NavigationLink]
+      },
+      {
+        "method": "POST",
+        "url": /api\/NavigationLinks/,
+        "response": serverData.NavigationLink
+      },{
+        "method": "PUT",
+        "url": /api\/NavigationLinks/,
+        "response": serverData.NavigationLink
+      },{
+        "method":"DELETE",
+        "url": /api\/NavigationLinks/,
+        "response":{count:1}
+      }]
+      
+      setup(function (done) {
+        server.autoRespond = true;
+        server.respondImmediately = true;
+        server.async = false;
+
+        fakeAjax.forEach(function (conf) {
+          (function (fake) {
+            server.respondWith(fake.method, fake.url, function (req) {
+              if (fake.type) {
+                req.respond(200, { "content-type": fake.type }, fake.response);
+              } else {
+                req.respond(200, { "content-type": 'application/json' }, JSON.stringify(fake.response));
+              }
+            });
+            console.log("Added fake server for : ", fake.method + " on " + fake.url);
+          })(conf);
+        });
+
+        el = fixture('navigation');
+        flush(function () {
+          done();
+        })
+      })
+
+      test('Intial load -> update -> Delete', function (done) {
+        flush(function () {
+          
+          el.set('selectedComponent',selectedComponent);
+          flush(function(){
+            assert.equal(el.routeData.UIRoute.path,serverData.UIRoute.path);
+            el.set('routeData.UIRoute.path',"/test-contact-form");
+            el.$.saveBtn.click();
+            flush(function(){
+              assert.equal(el.routeData.UIRoute.path,"/test-contact-form");
+              el.$.deleteBtn.click();
+              flush(function(){
+                assert.equal(el.routeData.UIRoute.path,undefined);
+                done();
+              }); 
+            });
+          });
+        });
+      });
+
+      
+    });
+
+  </script>
+</body>
+
+</html>
