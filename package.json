@@ -1,7 +1,7 @@
 {
   "name": "oe-component-manager",
   "description": "A template element , used to create oe-ui Polymer 3 elements",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "main": "oe-component-manager.js",
   "scripts": {
     "test": "polymer test --module-resolution node --skip-selenium-install",
